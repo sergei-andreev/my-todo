@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Document</title>
+
+		<style>
+			* {
+				box-sizing: border-box;
+			}
+
+			.form {
+				display: flex;
+				width: 300px;
+				justify-content: space-between;
+				height: 40px;
+				border: 1px solid rgba(0, 0, 0, 0.1);
+			}
+
+			.form__input-text {
+				padding: 5px 10px;
+				flex-grow: 1;
+				border: none;
+			}
+
+			.form__btn-add {
+				border: none;
+				padding: 5px 10px;
+				border-left: 1px solid rgba(0, 0, 0, 0.1);
+				background-color: #fff;
+				cursor: pointer;
+
+				transition: 0.1s;
+			}
+
+			.form__btn-add:hover {
+				background-color: #f0f8ff;
+			}
+
+			.list {
+				padding: 0;
+				list-style: none;
+				width: 300px;
+			}
+
+			.list__item {
+				margin-bottom: 10px;
+			}
+
+			.list-item {
+				display: flex;
+				justify-content: space-between;
+				border: 1px solid rgba(0, 0, 0, 0.1);
+				padding: 5px 10px;
+			}
+
+			.list-item__delete {
+				opacity: 0;
+				transition: 0.1s;
+				margin-right: 50px;
+				cursor: pointer;
+
+				border: 1px solid rgba(0, 0, 0, 0.1);
+				background-color: #fff;
+				cursor: pointer;
+				border-radius: 2px;
+
+				transition: 0.1s;
+			}
+
+			.list-item:hover .list-item__delete {
+				opacity: 1;
+				margin-right: 0;
+			}
+
+			.list-item__delete:hover {
+				background-color: #f0f8ff;
+			}
+		</style>
+	</head>
+	<body>
+		<form class="form">
+			<input class="form__input-text" type="text" />
+			<button class="form__btn-add" type="submit">Добавить</button>
+		</form>
+
+		<ul class="list"></ul>
+
+		<script src="main.js"></script>
+	</body>
+</html>
