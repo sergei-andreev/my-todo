@@ -3,13 +3,37 @@ class Model {
     constructor(controller) {
         this.controller = controller;
         this.todos = [];
+        this.id = 0;
     }
 
-    addTodo(todo) {
+    addTodo(todoText) {
+        const todo = {
+            id: this.id++,
+            text: todoText
+        }
+
         this.todos.push(todo);
         this.controller.updateView(this.todos);
     }
+
+    deleteTodo(id) {
+        this.todos = this.todos.filter(todo => todo.id !== id)
+
+        this.controller.updateView(this.todos);
+    }
+
+
+    deleteFirstTodo() {
+        this.todos.pop();
+        this.controller.updateView(this.todos);
+    }
+
+    deleteLastTodo() {
+        this.todos.shift();
+        this.controller.updateView(this.todos);
+    }
 }
+
 
 // ---------------------------------------------------------- Controller
 class Controller {
@@ -23,6 +47,20 @@ class Controller {
     addTodo(todo) {
         this.model.addTodo(todo);
     }
+
+    deleteTodo(id) {
+        this.model.deleteTodo(id);
+    }
+
+    deleteFirstTodo() {
+        this.model.deleteLastTodo();
+    }
+
+    deleteLastTodo() {
+        this.model.deleteFirstTodo();
+    }
+
+
 
     updateView(todos) {
         this.view.updateView(todos);
@@ -49,12 +87,17 @@ class View {
         document.querySelector('.text-input').value = '';
     }
 
-    updateView(todoText) {
+    updateView(todos) {
         const todoList = document.querySelector('.todo-list');
-        const li = document.createElement('li');
-        li.innerText = todoText;
+        todoList.innerHTML = '';
 
-        todoList.appendChild(li);
+
+        todos.forEach(todo => {
+            const li = document.createElement('li');
+            li.innerText = todo.text;
+            todoList.appendChild(li);
+        });
+
     }
 
     addTodo() {
