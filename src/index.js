@@ -6,13 +6,19 @@ const uuidv4 = require('uuid/v4');
 class Model {
     constructor(controller) {
         this.controller = controller;
-        this.todos = [];
+        this.todos = [
+            {id: 1, text: 'First', complete: true},
+            {id: 2, text: 'Second', complete: false},
+            {id: 3, text: 'Third', complete: true},
+            {id: 4, text: 'Fourth', complete: false}
+        ];
     }
 
     addTodo(todoText) {
         const todo = {
             id: uuidv4(),
-            text: todoText
+            text: todoText,
+            complete: false
         };
 
         this.todos.push(todo);
@@ -24,6 +30,40 @@ class Model {
 
         this.controller.updateView(this.todos);
     }
+
+    displayAll() {
+
+        this.controller.updateView(this.todos);
+    }
+
+    displayComplete() {
+        console.log(
+            this.todos.map((todo) => {
+                if (todo.complete === true) {
+                    return todo;
+                } else {
+                    return {};
+                }
+            })
+        );
+
+        this.controller.updateView(
+            this.todos.filter((todo) => {
+                if (todo.complete === true) {
+                    return todo;
+                }
+            })
+        );
+    }
+
+    displayNotComplete() {
+        this.controller.updateView(
+            this.todos.filter((todo) => {
+                if (todo.complete === false) {
+                    return todo;
+                }
+        }));
+    }
 }
 
 
@@ -34,6 +74,7 @@ class Controller {
         this.view = new View(this);
 
         this.view.addTodo();
+        this.view.handlerFilter();
     }
 
     addTodo(todo) {
@@ -48,9 +89,22 @@ class Controller {
         this.view.updateView(todos);
     }
 
+    displayAll() {
+        this.model.displayAll();
+    }
+
+    displayComplete() {
+        this.model.displayComplete();
+    }
+
+    displayNotComplete() {
+        this.model.displayNotComplete();
+    }
+
     getTodos() {
         console.log(this.model.todos);
     }
+
 }
 
 // ---------------------------------------------------------- View
@@ -116,7 +170,20 @@ class View {
             }
         });
     }
+
+    handlerFilter() {
+        document.querySelector('#rb-1').addEventListener('click', () => {
+            this.controller.displayAll();
+        });
+
+        document.querySelector('#rb-2').addEventListener('click', () => {
+            this.controller.displayComplete();
+        });
+
+        document.querySelector('#rb-3').addEventListener('click', () => {
+            this.controller.displayNotComplete();
+        });
+    }
 }
 
 const app = new Controller();
-app.addTodo('New todo item');
