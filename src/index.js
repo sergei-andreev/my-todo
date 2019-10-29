@@ -1,3 +1,5 @@
+import "./styles/main.scss";
+
 const uuidv4 = require('uuid/v4');
 
 // ---------------------------------------------------------- Model
@@ -11,7 +13,7 @@ class Model {
         const todo = {
             id: uuidv4(),
             text: todoText
-        }
+        };
 
         this.todos.push(todo);
         this.controller.updateView(this.todos);
@@ -58,9 +60,7 @@ class View {
     }
 
     getInputValue() {
-        let inputText = document.querySelector('.form__input-text').value;
-
-        return inputText;
+        return document.querySelector('.form__input-text').value;
     }
 
     clearInput() {
@@ -68,12 +68,24 @@ class View {
     }
 
     updateView(todos) {
-        createTodoItem = (todo) => {
+        // ПЕРЕД ДОБАВЛЕНИЕМ ЭЛЕМЕНТОВ УДАЛЯЕМ ВСЕ
+        const todoList = document.querySelector('.list');
+        todoList.innerHTML = '';
+
+        todos.forEach(todo => {
             const li = document.createElement('li');
             li.classList.add('list__item', 'list-item');
-            li.innerText = todo.text;
             li.dataset.id = todo.id;
 
+            // CHECKBOX
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+
+            // TEXT
+            const span = document.createElement('span');
+            span.innerText = todo.text;
+
+            // DELETE BUTTON
             const deleteTodo = document.createElement('button');
             deleteTodo.classList.add('list-item__delete');
             deleteTodo.innerHTML = 'X';
@@ -82,15 +94,11 @@ class View {
                 this.controller.deleteTodo(li.dataset.id);
             });
 
+            li.appendChild(checkbox);
+            li.appendChild(span);
             li.append(deleteTodo);
+
             todoList.appendChild(li);
-        };
-
-        const todoList = document.querySelector('.list');
-        todoList.innerHTML = '';
-
-        todos.forEach(todo => {
-            createTodoItem(todo);
         });
 
         console.log(todos);
@@ -108,14 +116,7 @@ class View {
             }
         });
     }
-
-    deleteTodo() {
-        const deleteBtn = document.querySelector('.list-item__delete');
-
-        deleteBtn.addEventListener('click', () => {
-            this.controller.deleteTodo(todo);
-        });
-    }
 }
 
 const app = new Controller();
+app.addTodo('New todo item');
