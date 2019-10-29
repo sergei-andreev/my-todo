@@ -6,12 +6,7 @@ const uuidv4 = require('uuid/v4');
 class Model {
     constructor(controller) {
         this.controller = controller;
-        this.todos = [
-            {id: 1, text: 'First', complete: true},
-            {id: 2, text: 'Second', complete: false},
-            {id: 3, text: 'Third', complete: true},
-            {id: 4, text: 'Fourth', complete: false}
-        ];
+        this.todos = [];
     }
 
     addTodo(todoText) {
@@ -31,22 +26,17 @@ class Model {
         this.controller.updateView(this.todos);
     }
 
-    displayAll() {
+    toggleTodo(id) {
+        this.todos = this.todos.map(todo =>
+            todo.id == id ? { id: todo.id,text: todo.text, complete: !todo.complete } : todo
+        )
+    }
 
+    displayAll() {
         this.controller.updateView(this.todos);
     }
 
     displayComplete() {
-        console.log(
-            this.todos.map((todo) => {
-                if (todo.complete === true) {
-                    return todo;
-                } else {
-                    return {};
-                }
-            })
-        );
-
         this.controller.updateView(
             this.todos.filter((todo) => {
                 if (todo.complete === true) {
@@ -62,8 +52,10 @@ class Model {
                 if (todo.complete === false) {
                     return todo;
                 }
-        }));
+            }));
     }
+
+
 }
 
 
@@ -75,6 +67,7 @@ class Controller {
 
         this.view.addTodo();
         this.view.handlerFilter();
+        this.displayAll();
     }
 
     addTodo(todo) {
@@ -83,6 +76,10 @@ class Controller {
 
     deleteTodo(id) {
         this.model.deleteTodo(id);
+    }
+
+    toggleTodo(id) {
+        this.model.toggleTodo(id);
     }
 
     updateView(todos) {
@@ -122,7 +119,6 @@ class View {
     }
 
     updateView(todos) {
-        // ПЕРЕД ДОБАВЛЕНИЕМ ЭЛЕМЕНТОВ УДАЛЯЕМ ВСЕ
         const todoList = document.querySelector('.list');
         todoList.innerHTML = '';
 
@@ -134,6 +130,9 @@ class View {
             // CHECKBOX
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
+            checkbox.addEventListener('click', () => {
+                this.controller.toggleTodo(li.dataset.id);
+            });
 
             // TEXT
             const span = document.createElement('span');
