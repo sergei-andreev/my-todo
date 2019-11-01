@@ -11,18 +11,24 @@
 	<body>
 		<div class="filter">
 			<div class="filter__radio">
-				<input id="rb-1" type="radio" name="radio" value="10" checked />
-				<label for="rb-1">Все</label>
+				<input id="rb-1" type="radio" name="radio" checked />
+				<label id="rbl-1" for="rb-1">
+					Все
+				</label>
 			</div>
 
 			<div class="filter__radio">
-				<input id="rb-2" type="radio" name="radio" value="1" />
-				<label for="rb-2">Выполненные</label>
+				<input id="rb-2" type="radio" name="radio" />
+				<label id="rbl-2" for="rb-2">
+					Выполненные
+				</label>
 			</div>
 
 			<div class="filter__radio">
-				<input id="rb-3" type="radio" name="radio" value="0" />
-				<label for="rb-3">Невыполненные</label>
+				<input id="rb-3" type="radio" name="radio" />
+				<label id="rbl-3" for="rb-3">
+					Невыполненные
+				</label>
 			</div>
 		</div>
 
@@ -32,6 +38,8 @@
 		</form>
 
 		<ul class="list"></ul>
+
+		<button class="todos-logs" type="submit">Получить массив</button>
 
 		<script src="main.js"></script>
 	</body>
