@@ -2,3 +2,9 @@ node_modules
 dist
 .idea
 .vs
+.firebase/hosting.cHVibGlj.cache
+.firebaserc
+firebase.json
+firestore.rules
+src/js/firebaseConfig.js
+.gitignore
