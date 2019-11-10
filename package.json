@@ -25,6 +25,8 @@
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "firebase": "^7.3.0",
     "uuid": "latest"
   },
   "description": ""

@@ -1,53 +1,74 @@
+import 'babel-polyfill';
+import {config} from './firebaseConfig.js';
+import * as firebase from "firebase/app";
+import "firebase/firestore";
 import uuidv4 from 'uuid/v4';
 
 export default class Model {
     constructor(controller) {
         this.controller = controller;
-        this.todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+        firebase.initializeApp(config);
+        this.db = firebase.firestore().collection('todos');
+
+        this.todos = [];
+        
+        this.initTodos();
+    }
+
+    async initTodos() {
+        const snapshot = await this.db.get();
+        this.todos = snapshot.docs.map(doc => doc.data());
+
+        this.updateView();
     }
 
     updateView() {
-        localStorage.setItem('todos', JSON.stringify(this.todos));
         this.controller.updateView(this.todos);
     }
 
-    addTodo(todoText = '') {
-        const todo = {
-            id: uuidv4(),
-            text: todoText,
-            complete: false,
-        };
-
-        this.todos.push(todo);
-        this.updateView(this.todos);
-    }
-
-    editTodo(id, todoText) {
-        this.todos = this.todos.map(todo =>
-            todo.id === id ? {
-                id: todo.id,
+    async addTodo(todoText = '') {
+        try {
+            const todo = {
+                id: uuidv4(),
                 text: todoText,
-                complete: todo.complete
-            } : todo
-        )
+                complete: false,
+            };
 
-        this.updateView();
+            await this.db.doc(`${todo.id}`).set(todo);
+
+            const snapshot = await this.db.get();
+
+            this.todos = snapshot.docs.map(doc => doc.data());
+            this.updateView();
+
+        } catch(error) {
+            console.log(error)
+        }
     }
 
-    deleteTodo(id) {
-        this.todos = this.todos.filter(todo => todo.id !== id);
+    async editTodo(id, todoText) {
+        await this.db.doc(`${id}`).update({
+            text: todoText
+        });
 
-        this.updateView();
+        this.initTodos();
     }
 
-    toggleTodo(id) {
-        this.todos = this.todos.map(todo =>
-            todo.id === id ? {
-                id: todo.id,
-                text: todo.text,
-                complete: !todo.complete
-            } : todo
-        )
-        this.updateView();
+    async deleteTodo(id) {
+        await this.db.doc(`${id}`).delete();
+
+        this.initTodos();
+    }
+
+    async toggleTodo(id) {
+        let snapShot = await this.db.doc(`${id}`).get();
+        let currentComplete = await snapShot.data().complete;
+
+        await this.db.doc(`${id}`).update({
+            complete: !currentComplete
+        });
+
+        this.initTodos();
     }
 }
